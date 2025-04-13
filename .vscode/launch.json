@@ -1,0 +1,66 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Run any python file",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${file}",
+        "console": "integratedTerminal",
+        "justMyCode": false
+      },
+      {
+        // deepspeed  --num_gpus=2  --master_port 6666  finetuning_freeze.py
+        "name": "sft debug",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "/usr/local/bin/deepspeed",
+        "cwd": "${workspaceFolder}",
+        "args": [
+          "--module",
+          "openrlhf.cli.train_sft",
+          "--max_len",
+          "2048",
+          "--dataset",
+          "/data/hg_datasets/OpenOrca",
+          "--input_key",
+          "question",
+          "--output_key",
+          "response",
+          "--train_batch_size",
+          "4",
+          "--micro_train_batch_size",
+          "1",
+          "--max_samples",
+          "500",
+          "--pretrain",
+          "/data/hg_models/deepseek-coder-1.3b-instruct",
+          "--save_steps",
+          "-1",
+          "--logging_steps",
+          "1",
+          "--eval_steps",
+          "-1",
+          "--zero_stage",
+          "3",
+          "--max_epochs",
+          "1",
+          "--bf16",
+          "--flash_attn",
+          "--learning_rate",
+          "5e-6",
+          "--load_checkpoint",
+          "--gradient_checkpointing"
+        ],
+        "console": "integratedTerminal",
+        "justMyCode": false,
+        "env": {
+          "PYTHONPATH" : "./:${PYTHONPATH}",
+          "CUDA_VISIBLE_DEVICES":"0,1,2,3"
+        }
+      },
+    ]
+}
